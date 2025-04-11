@@ -1,35 +1,16 @@
-# Utiliser une image de base officielle Node.js
-FROM node:18-bullseye
+FROM node:20-alpine
 
-# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copier package.json et package-lock.json
-COPY spa_front/package*.json ./
+COPY package*.json ./
 
-# Installer les dépendances
 RUN npm install
 
-# Copier le reste de l'application
-COPY spa_front/ .
+COPY . .
 
-# Construire l'application Next.js
-RUN npm run build
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-# Étape 2 : dev Stage
-# FROM base as builder
-
-# Définir le répertoire de travail dans le conteneur
-# WORKDIR /app
-
-# Copier uniquement les fichiers de build nécessaires
-# COPY --from=builder /app /app
-
-# Nettoyer le cache pour réduire la taille de l'image
-RUN npm cache clean --force
-
-# Exposer le port sur lequel l'application va tourner
 EXPOSE 3000
 
-# Commande pour démarrer l'application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
